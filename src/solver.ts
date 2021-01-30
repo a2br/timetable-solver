@@ -14,10 +14,7 @@ export function solveTimetables(
 	const newSatisfaction = scenarios[0].globalSatisfaction;
 
 	return {
-		oldSatisfaction: {
-			sum: 0,
-			avg: 0,
-		},
+		oldSatisfaction: timetable.evalSatisfaction(),
 		newSatisfaction,
 		scenarios,
 	};

@@ -8,11 +8,20 @@ export class Timetable {
 		const available = isAvailable(entity, this, at);
 		return available;
 	}
-	filter(entities: uniqueId[] | uniqueId): Timetable {
+	filter(entities: uniqueId[] | Set<uniqueId> | uniqueId): Timetable {
+		entities = entities instanceof Set ? [...entities] : entities;
 		const filtered = this.events.filter((event) =>
 			Array.isArray(entities)
 				? entities.some((entity) => event.entities.has(entity))
-				: event.entities.has(entities)
+				: event.entities.has(entities as uniqueId)
+		);
+		const newTimetable = new Timetable(filtered);
+		return newTimetable;
+	}
+	filterGroup(entities: uniqueId[] | Set<uniqueId>): Timetable {
+		entities = [...entities];
+		const filtered = this.events.filter((event) =>
+			(entities as uniqueId[]).every((entity) => event.entities.has(entity))
 		);
 		const newTimetable = new Timetable(filtered);
 		return newTimetable;
@@ -25,8 +34,8 @@ export class Timetable {
 		// Sub gapMalus
 		return points;
 	}
-	isValid(): boolean {
-		const valid = this.events.every(
+	isValid(entities: uniqueId[]): boolean {
+		const valid = this.filter(entities).events.every(
 			(e) =>
 				this.events
 					.filter((ev) => ev.id !== e.id) // every event except the one being tested
@@ -75,10 +84,26 @@ export class Timetable {
 		return futureTimetable;
 	};
 	swappable(a: Event | number, b: Event | number): boolean {
+		if (typeof a === "number") {
+			a = this.events[a];
+			if (!a) throw new Error("Can't find event from its index!");
+		}
+		if (typeof b === "number") {
+			b = this.events[b];
+			if (!b) throw new Error("Can't find event from its index!");
+		}
 		const futureTimetable = this.forceSwap(a, b);
-		return futureTimetable.isValid();
+		return futureTimetable.isValid([...a.entities, ...b.entities]);
 	}
 	swap(a: Event | number, b: Event | number): Timetable {
+		if (typeof a === "number") {
+			a = this.events[a];
+			if (!a) throw new Error("Can't find event from its index!");
+		}
+		if (typeof b === "number") {
+			b = this.events[b];
+			if (!b) throw new Error("Can't find event from its index!");
+		}
 		if (!this.swappable(a, b))
 			throw new Error("The two events are not swappable.");
 		return this.forceSwap(a, b);
