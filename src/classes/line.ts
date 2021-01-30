@@ -1,5 +1,5 @@
 export class Line {
-	constructor(public start: number, public end: number) {
+	constructor(readonly start: number, readonly end: number) {
 		if (start > end) throw new Error("A line's length can't be negative");
 	}
 	conflictsWith(line: Line): boolean {

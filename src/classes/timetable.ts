@@ -3,7 +3,7 @@ import { Event } from "./event";
 import { Line } from "./line";
 
 export class Timetable {
-	constructor(public events: Event[]) {}
+	constructor(readonly events: Event[]) {}
 	isAvailable(entity: uniqueId, at: Line): boolean {
 		const available = isAvailable(entity, this, at);
 		return available;
@@ -82,6 +82,13 @@ export class Timetable {
 		if (!this.swappable(a, b))
 			throw new Error("The two events are not swappable.");
 		return this.forceSwap(a, b);
+	}
+	get length(): number {
+		const nonEmpty = this.events.filter((e) => !e.empty);
+		const startHour = nonEmpty.sort((a, b) => a.start - b.start)[0].start;
+		const endHour = nonEmpty.sort((a, b) => b.end - a.end)[0].end;
+		const dayLength = endHour - startHour;
+		return dayLength;
 	}
 }
 

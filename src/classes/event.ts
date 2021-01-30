@@ -2,16 +2,16 @@ import { uniqueId } from "../types";
 import { Line } from "./line";
 
 export class Event {
-	public end: number;
+	readonly end: number;
 
 	constructor(
-		public id: uniqueId,
-		public name: string,
-		public start: number,
-		public length: number,
-		public entities: Set<uniqueId>,
-		public empty?: boolean,
-		public fixed?: boolean
+		readonly id: uniqueId,
+		readonly name: string,
+		readonly start: number,
+		readonly length: number,
+		readonly entities: Set<uniqueId>,
+		readonly empty?: boolean,
+		readonly fixed?: boolean
 	) {
 		this.end = this.start + this.length;
 		new Line(this.start, this.end);
