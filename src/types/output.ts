@@ -1,4 +1,5 @@
 import { classObject } from "./class";
+import { timetable } from "./event";
 import { teacherObject } from "./teacher";
 
 export interface finalOutput {
@@ -28,6 +29,7 @@ export interface scenario {
 	};
 	classes: classResult[];
 	teachers: teacherResult[];
+	timetable: timetable;
 }
 
 export interface classResult extends classObject {

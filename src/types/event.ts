@@ -1,34 +1,14 @@
 import { uniqueId } from "./";
 
-export interface event {
-	/**
-	 * @description Must be unique
-	 */
+export interface superEvent {
 	id: uniqueId;
-	/**
-	 * @description Used to be identified by hoomans
-	 */
 	name: string;
-	// /**
-	//  * @description Used to compare times
-	//  * @example 8h
-	//  */
-	// time: unknown;
-	/**
-	 * @description Whether it can be moved
-	 */
-	fixed?: boolean;
-	/**
-	 * @description Is it an empty event ? (not a course, obviously)
-	 */
+	time: number;
+	length: number;
 	empty?: boolean;
-	/**
-	 * @description Unique ID of the teacher
-	 */
-	teacherId?: uniqueId;
-	missingTeacher?: boolean;
-	/**
-	 * @description Unique ID of the class
-	 */
+	fixed?: boolean;
 	classId?: uniqueId;
+	teacherId?: uniqueId;
 }
+
+export type timetable = superEvent[];

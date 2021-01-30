@@ -1,7 +1,6 @@
-import { uniqueId, event } from "./";
+import { uniqueId } from "./";
 
 export interface classObject {
 	id: uniqueId;
 	name: string;
-	timetable: event[];
 }
