@@ -1,8 +1,3 @@
-interface lineParams {
-	start: number;
-	end: number;
-}
-
 export class Line {
 	constructor(public start: number, public end: number) {
 		if (start > end) throw new Error("A line's length can't be negative");

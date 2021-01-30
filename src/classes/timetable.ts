@@ -17,6 +17,14 @@ export class Timetable {
 		const newTimetable = new Timetable(filtered);
 		return newTimetable;
 	}
+	//TODO SELECT BY ID, OR TAG (with entities index)
+	evalSatisfaction(entities?: uniqueId[] | uniqueId): number {
+		const target = entities ? this.filter(entities) : this;
+		const points = 100;
+		// Add trimBonus
+		// Sub gapMalus
+		return points;
+	}
 }
 
 function isAvailable(

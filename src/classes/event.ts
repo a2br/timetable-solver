@@ -16,7 +16,7 @@ export class Event {
 		this.end = this.start + this.length;
 		new Line(this.start, this.end);
 	}
-	getLine() {
+	getLine(): Line {
 		return new Line(this.start, this.end);
 	}
 	conflictsWith(thing: Event | Line): boolean {

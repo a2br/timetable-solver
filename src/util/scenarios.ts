@@ -1,5 +1,5 @@
 import { entity, uniqueId, scenario } from "../types";
-import { Event, Timetable } from "../classes";
+import { Timetable } from "../classes";
 
 export function findScenarios(
 	timetable: Timetable,
@@ -9,7 +9,7 @@ export function findScenarios(
 	depth = 1
 ): scenario[] {
 	if (depth > maxDepth) return [];
-	let scenarios: scenario[] = [];
+	const scenarios: scenario[] = [];
 
 	//TODO Get best scenario in function of everyone's satisfaction
 
