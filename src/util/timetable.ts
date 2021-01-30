@@ -14,8 +14,9 @@ export function canBeSwapped(
 	blankSpot: event,
 	actualCourse: event,
 	timetable: event[],
-	teacher: teacherObject
+	teacher?: teacherObject
 ): boolean {
+	if (!teacher) return !actualCourse.fixed;
 	const whatTheTeachersDoing = teacher.timetable[timetable.indexOf(blankSpot)];
 	const teacherAvailable = whatTheTeachersDoing.empty || false;
 	return teacherAvailable && !actualCourse.fixed;
