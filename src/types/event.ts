@@ -9,6 +9,11 @@ export interface event {
 	 * @description Used to be identified by hoomans
 	 */
 	name: string;
+	// /**
+	//  * @description Used to compare times
+	//  * @example 8h
+	//  */
+	// time: unknown;
 	/**
 	 * @description Whether it can be moved
 	 */
@@ -21,6 +26,7 @@ export interface event {
 	 * @description Unique ID of the teacher
 	 */
 	teacherId?: uniqueId;
+	missingTeacher?: boolean;
 	/**
 	 * @description Unique ID of the class
 	 */
