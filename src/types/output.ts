@@ -1,6 +1,5 @@
-import { classObject } from "./class";
-import { timetable } from "./event";
-import { teacherObject } from "./teacher";
+import { entity } from "./entity";
+import { Event } from "../classes";
 
 export interface finalOutput {
 	oldSatisfaction: {
@@ -27,14 +26,10 @@ export interface scenario {
 		sum: number;
 		avg: number;
 	};
-	classes: classResult[];
-	teachers: teacherResult[];
-	timetable: timetable;
+	entities: entityResult[];
+	timetable: Event[];
 }
 
-export interface classResult extends classObject {
-	classSatisfaction: number;
-}
-export interface teacherResult extends teacherObject {
-	teacherSatisfaction: number;
+export interface entityResult extends entity {
+	satisfaction: number;
 }

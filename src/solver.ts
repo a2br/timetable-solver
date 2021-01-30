@@ -1,21 +1,15 @@
-import { classObject, teacherObject, uniqueId, timetable } from "./types";
+import { Timetable } from "./classes";
+import { entity, uniqueId } from "./types";
 import { finalOutput } from "./types";
 import { findScenarios } from "./util";
 
 export function solveTimetables(
-	timetable: timetable,
-	teachers: teacherObject[],
-	classes: classObject[],
-	missingTeachers: uniqueId[]
+	timetable: Timetable,
+	entities: entity[],
+	missingEntities: uniqueId[]
 ): finalOutput {
 	//TODO Get current satisfaction data
-	const scenarios = findScenarios(
-		timetable,
-		teachers,
-		classes,
-		missingTeachers,
-		100
-	);
+	const scenarios = findScenarios(timetable, entities, missingEntities, 100);
 	// Get the highest satisfaction data of the first (best) scenario
 	const newSatisfaction = scenarios[0].globalSatisfaction;
 

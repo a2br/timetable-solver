@@ -1,17 +1,11 @@
-import {
-	teacherObject,
-	classObject,
-	uniqueId,
-	scenario,
-	timetable,
-} from "../types";
+import { entity, uniqueId, scenario } from "../types";
+import { Event, Timetable } from "../classes";
 
 export function findScenarios(
-	timetable: timetable,
-	teachers: teacherObject[],
-	classes: classObject[],
-	missingTeachers: uniqueId[],
-	maxDepth = 10,
+	timetable: Timetable,
+	entities: entity[],
+	missingEntities: uniqueId[],
+	maxDepth = 100,
 	depth = 1
 ): scenario[] {
 	if (depth > maxDepth) return [];
