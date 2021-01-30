@@ -25,6 +25,64 @@ export class Timetable {
 		// Sub gapMalus
 		return points;
 	}
+	isValid(): boolean {
+		const valid = this.events.every(
+			(e) =>
+				this.events
+					.filter((ev) => ev.id !== e.id) // every event except the one being tested
+					.every((ev) => !ev.conflictsWith(e)) // doesn't conflict with any other event
+		);
+		return valid;
+	}
+	private forceSwap = (a: Event | number, b: Event | number): Timetable => {
+		if (typeof a === "number") {
+			a = this.events[a];
+			if (!a) throw new Error("Can't find event from its index!");
+		}
+		if (typeof b === "number") {
+			b = this.events[b];
+			if (!b) throw new Error("Can't find event from its index!");
+		}
+		const futureA = new Event(
+			a.id,
+			a.name,
+			b.start,
+			a.length,
+			a.entities,
+			a.empty,
+			a.fixed
+		);
+		const futureB = new Event(
+			b.id,
+			b.name,
+			a.start,
+			b.length,
+			b.entities,
+			b.empty,
+			b.fixed
+		);
+		const futureEvents = [...this.events].map((e) => {
+			switch (e.id) {
+				case futureA.id:
+					return futureA;
+				case futureB.id:
+					return futureB;
+				default:
+					return e;
+			}
+		});
+		const futureTimetable = new Timetable(futureEvents);
+		return futureTimetable;
+	};
+	swappable(a: Event | number, b: Event | number): boolean {
+		const futureTimetable = this.forceSwap(a, b);
+		return futureTimetable.isValid();
+	}
+	swap(a: Event | number, b: Event | number): Timetable {
+		if (!this.swappable(a, b))
+			throw new Error("The two events are not swappable.");
+		return this.forceSwap(a, b);
+	}
 }
 
 function isAvailable(
