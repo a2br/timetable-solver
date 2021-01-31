@@ -26,16 +26,15 @@ export class Timetable {
 		const newTimetable = new Timetable(filtered);
 		return newTimetable;
 	}
-	//TODO SELECT BY ID, OR TAG (with entities index)
 	evalSatisfaction(entities?: uniqueId[] | uniqueId): number {
 		const target = entities ? this.filter(entities) : this;
-		const points = 100;
-		// Add trimBonus
-		// Sub gapMalus
-		return points;
+		const satisfaction = evalSatisfaction(target);
+		return satisfaction;
 	}
-	isValid(entities: uniqueId[]): boolean {
-		const valid = this.filter(entities).events.every(
+	isValid(entities?: uniqueId[]): boolean {
+		const target =
+			entities && entities !== [] ? this.filter(entities).events : this.events;
+		const valid = target.every(
 			(e) =>
 				this.events
 					.filter((ev) => ev.id !== e.id) // every event except the one being tested
@@ -133,4 +132,61 @@ function isAvailable(
 	const t = timetable.filter(entityId);
 	const available = t.events.every((e) => !e.conflictsWith(eventLine));
 	return available;
+}
+
+//TODO SELECT BY ID, OR TAG (with entities index)
+function evalSatisfaction(timetable: Timetable): number {
+	if (!timetable.isValid())
+		throw new Error("Cannot evaluate invalid timetable");
+	let points = 100;
+	points += evalTrimBonus(timetable);
+	points += evalGapMalus(timetable);
+	return points;
+}
+
+function evalTrimBonus(timetable: Timetable): number {
+	let satis = 0;
+	if (!timetable.isValid())
+		throw new Error("Cannot evaluate invalid timetable");
+	//? Eval day length
+	const { length } = timetable;
+	satis += (1 / length) * 1000;
+	//? Eval trimmed empty events number
+	const NotEmpty = {};
+	// First hours of the day
+	try {
+		timetable.events.forEach((e) => {
+			if (!e.empty) throw NotEmpty;
+			// Add points until a non-empty event is found
+			satis += 2 * ((1 / length) * 1000);
+		});
+	} catch (err) {
+		if (err !== NotEmpty) throw err;
+	}
+	// Last hours of the day
+	try {
+		timetable.events.forEach((e, i, a) => {
+			const l = a[a.length - 1 - i];
+			if (!l.empty) throw NotEmpty;
+			// Add points until a non-empty event is found
+			satis += 1 * ((1 / length) * 1000);
+		});
+	} catch (err) {
+		if (err !== NotEmpty) throw err;
+	}
+	return satis;
+}
+function evalGapMalus(timetable: Timetable): number {
+	if (!timetable.isValid())
+		throw new Error("Cannot evaluate invalid timetable");
+	let satis = 0;
+	timetable.events.forEach((e, i, a) => {
+		const [before, after] = [a[i - 1], a[i + 1]];
+		const firstHalf = i <= a.length / 2;
+		const lastHalf = i > a.length / 2;
+		if (firstHalf && after.empty) satis -= 10;
+		if (lastHalf && before.empty) satis -= 10;
+	});
+	return satis;
+	//TODO Eval how many gaps there is in the timetable
 }
