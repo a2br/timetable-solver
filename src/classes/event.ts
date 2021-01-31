@@ -16,14 +16,14 @@ export class Event {
 		this._length = length;
 		new Line(this.start, this.end);
 	}
-	get length() {
+	get length(): number {
 		return this._length;
 	}
 	set length(newValue: number) {
 		if (length < 0) throw new Error();
 		this._length = newValue;
 	}
-	get end() {
+	get end(): number {
 		return this.start + this.length;
 	}
 

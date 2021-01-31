@@ -1,5 +1,5 @@
 import { entity } from "./entity";
-import { Event, Timetable } from "../classes";
+import { Timetable } from "../classes";
 
 export interface finalOutput {
 	oldSatisfaction: number;
