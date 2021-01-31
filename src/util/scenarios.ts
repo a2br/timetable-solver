@@ -9,10 +9,7 @@ export function findScenarios(
 	depth = 1
 ): scenario[] {
 	if (depth > maxDepth) return [];
-	//TODO Get best scenario
 
-	//TODO Find blank spots
-	//TODO Edit blank spots: delete missing entity, mark as empty
 	const events = [...timetable.events].map((e) => {
 		if (!missingEntities.some((mE) => e.entities.has(mE))) return e;
 		e.empty = true;
@@ -23,17 +20,41 @@ export function findScenarios(
 	});
 	const emptyEvents = events.filter((e) => !!e.empty);
 	emptyEvents.forEach((event, index) => {
-		//TODO Find non-empty events with the same entities
+		//? Find non-empty events with the same entities
 		const planning = new Timetable(events).filterGroup(event.entities);
-		//TODO Try to swap with these events (the chronologically first, then the last)
+		const nonEmptyPlusThis = new Timetable(
+			events.filter((e) => !e.empty || e.id === event.id)
+		).filterGroup(event.entities);
+
+		// Find the first/last non-empty event
+		const firstNonEmpty = planning.events.sort((a, b) => a.start - b.start)[0];
+		const lastNonEmpty = planning.events.sort((a, b) => b.start - a.start)[0];
+
+		// Special case
+		const sndLastNonEmpty =
+			nonEmptyPlusThis.events.slice(index + 1).length === 1;
+
+		if (sndLastNonEmpty && planning.swappable(event, lastNonEmpty)) {
+			timetable = timetable.merge(planning.swap(event, lastNonEmpty));
+		} else if (planning.swappable(event, firstNonEmpty)) {
+			timetable = timetable.merge(planning.swap(event, firstNonEmpty));
+		} else if (planning.swappable(event, lastNonEmpty)) {
+			timetable = timetable.merge(planning.swap(event, lastNonEmpty));
+		}
 	});
-	//TODO For each entity, find the first/last non-empty event of the day, check if it's okay
-	//TODO If it isn't, do the same thing with the others entity, until it works
-	//TODO If it doesn't, don't move
-	const scenario: scenario = {};
+	const scenario: scenario = {
+		globalSatisfaction: timetable.evalSatisfaction(),
+		entities: entities.map((e) => ({
+			id: e.id,
+			name: e.name,
+			tags: e.tags,
+			satisfaction: timetable.evalSatisfaction(e.id),
+		})),
+		timetable,
+	};
 	const scenarios = [
 		scenario,
 		...findScenarios(timetable, entities, missingEntities, maxDepth, depth + 1),
-	].sort((a, b) => a.globalSatisfaction.sum - b.globalSatisfaction.sum);
+	].sort((a, b) => a.globalSatisfaction - b.globalSatisfaction);
 	return scenarios;
 }

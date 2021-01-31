@@ -8,13 +8,11 @@ export function solveTimetables(
 	entities: entity[],
 	missingEntities: uniqueId[]
 ): finalOutput {
-	//TODO Get current satisfaction data
+	const oldSatisfaction = timetable.evalSatisfaction();
 	const scenarios = findScenarios(timetable, entities, missingEntities, 100);
-	// Get the highest satisfaction data of the first (best) scenario
 	const newSatisfaction = scenarios[0].globalSatisfaction;
-
 	return {
-		oldSatisfaction: timetable.evalSatisfaction(),
+		oldSatisfaction,
 		newSatisfaction,
 		scenarios,
 	};

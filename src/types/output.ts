@@ -1,5 +1,5 @@
 import { entity } from "./entity";
-import { Event } from "../classes";
+import { Event, Timetable } from "../classes";
 
 export interface finalOutput {
 	oldSatisfaction: number;
@@ -10,7 +10,7 @@ export interface finalOutput {
 export interface scenario {
 	globalSatisfaction: number;
 	entities: entityResult[];
-	timetable: Event[];
+	timetable: Timetable;
 }
 
 export interface entityResult extends entity {
