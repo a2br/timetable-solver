@@ -115,6 +115,14 @@ export class Timetable {
 		const dayLength = endHour - startHour;
 		return dayLength;
 	}
+	merge(timetable: Timetable): Timetable {
+		const extEvents = timetable.events;
+		const newEvents = this.events.map(
+			(oldE) => extEvents.find((extE) => extE.id === oldE.id) || oldE
+		);
+		const newTimetable = new Timetable(newEvents);
+		return newTimetable;
+	}
 }
 
 function isAvailable(
